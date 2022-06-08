@@ -27,7 +27,9 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 }
 
 func (ws WebServerHandler) InitRoutes() {
-	routes.NewHealthCheckRoute(ws.echoServer)
+	config := config.NewConfig()
+
+	routes.NewHealthCheckRoute(ws.echoServer, config)
 }
 
 func (ws WebServerHandler) Start() error {

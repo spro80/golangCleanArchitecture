@@ -22,6 +22,8 @@ func main() {
 	fmt.Println("[main.go] Calling to New Web Server")
 	ws := web.NewWebServer(configurations)
 
+	ws.InitRoutes()
+
 	fmt.Println("[main.go] Calling webServer Start")
 	go ws.Start()
 

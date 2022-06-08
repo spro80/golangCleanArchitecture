@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/web/routes"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
 
@@ -25,7 +26,11 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 	return &WebServerHandler{echoServer: echoServer, config: config}
 }
 
-func (ws WebServerHandler) Start() {
+func (ws WebServerHandler) InitRoutes() {
+	routes.NewHealthCheckRoute(ws.echoServer)
+}
+
+func (ws WebServerHandler) Start() error {
 	fmt.Println("Init in method Start")
 
 	/*configServer, err := ws.config.Handler()
@@ -48,4 +53,6 @@ func (ws WebServerHandler) Start() {
 		WriteTimeout: 3 * time.Minute,
 	}
 	ws.echoServer.Logger.Fatal(ws.echoServer.StartServer(server))
+
+	return nil
 }

@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	controllers "github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/web/routes"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
 
 type WebServerInterface interface {
 	StartServer() error
+	InitRoutes()
 }
 
 type WebServerHandler struct {
@@ -26,14 +28,18 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 	return &WebServerHandler{echoServer: echoServer, config: config}
 }
 
-func (ws WebServerHandler) InitRoutes() {
-	config := config.NewConfig()
+func (ws WebServerHandler) InitRoutes(templateCtrl controllers.TemplateControllerInterface) {
+	fmt.Println("[server.go] Init in InitRoutes")
+	//config := config.NewConfig()
 
-	routes.NewHealthCheckRoute(ws.echoServer, config)
+	routes.NewHealthCheckRoute(ws.echoServer, ws.config)
+	routes.NewTemplateRoute(ws.echoServer, templateCtrl)
+
+	fmt.Println("[server.go] InitRoutes called successfully")
 }
 
 func (ws WebServerHandler) Start() error {
-	fmt.Println("Init in method Start")
+	fmt.Println("[server.go] Init in method Start")
 
 	/*configServer, err := ws.config.Handler()
 	if err != nil {

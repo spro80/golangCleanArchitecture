@@ -3,7 +3,7 @@ package infraestructure
 import (
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/templateUseCase"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/web"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
 

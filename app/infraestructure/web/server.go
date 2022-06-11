@@ -7,7 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	controllers "github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/web/routes"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/routes"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
 

@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/web"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
 

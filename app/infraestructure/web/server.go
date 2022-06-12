@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	controllers "github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/registerUserController"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/routes"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
@@ -28,18 +29,21 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 	return &WebServerHandler{echoServer: echoServer, config: config}
 }
 
-func (ws WebServerHandler) InitRoutes(templateCtrl controllers.TemplateControllerInterface) {
-	fmt.Println("[server.go] Init in InitRoutes")
+func (ws WebServerHandler) InitRoutes(
+	templateCtrl templateController.TemplateControllerInterface,
+	registerUserCtrl registerUserController.RegisterUserControllerInterface) {
+
+	fmt.Println("[server] Init in InitRoutes")
 	//config := config.NewConfig()
 
 	routes.NewHealthCheckRoute(ws.echoServer, ws.config)
 	routes.NewTemplateRoute(ws.echoServer, templateCtrl)
-
-	fmt.Println("[server.go] InitRoutes called successfully")
+	routes.NewRegisterUserRoute(ws.echoServer, registerUserCtrl)
+	fmt.Println("[server] InitRoutes called successfully")
 }
 
 func (ws WebServerHandler) Start() error {
-	fmt.Println("[server.go] Init in method Start")
+	fmt.Println("[server] Init in method Start")
 
 	/*configServer, err := ws.config.Handler()
 	if err != nil {

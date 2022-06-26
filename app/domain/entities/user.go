@@ -1,12 +1,11 @@
 package entities
 
 type User struct {
-	Id        int    `json: "id"`
-	Rut       string `json: "rut"`
-	Digit     int    `json: "digit"`
-	Username  string `json: "userName"`
-	password  string `json: "password"`
-	Email     string `json: "email"`
-	FirstName string `json: "firstName"`
-	LastName  string `json: "lastName"`
+	IdUser    string `json:"idUser" validate:"required"`
+	Rut       string `json:"rut" validate:"required"`
+	FirstName string `json:"firstName" validate:"required"`
+	LastName  string `json:"lastName" validate:"required"`
+	Email     string `json:"email" validate:"required"`
+	UserName  string `json:"userName" validate:"required"`
+	Password  string `json:"password" validate:"required"`
 }

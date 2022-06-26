@@ -21,11 +21,9 @@ func NewRegisterUserController(useCase registerUserUseCase.RegisterUserUseCaseIn
 
 func (r *RegisterUserControllerHandler) HandlerRegisterUserController(u entities.User) error {
 	fmt.Println("[register_user_controller] Init in HandlerRegisterUserController")
+	fmt.Printf("[register_user_controller] UserName: [%v]", u.UserName)
+
 	fmt.Println("[register_user_controller] Calling HandlerRegisterUserUseCase")
-
-	//fmt.Printf("[register_user_controller] UserName: [%v]", u.Username)
-	//fmt.Printf("[register_user_controller] UserName: [%v]", u.Username)
-
 	userEntity, err := r.useCase.HandlerRegisterUserUseCase(u)
 	if err != nil {
 		fmt.Printf("[register_user_controller] Error: [%s]", err.Error())

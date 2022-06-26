@@ -24,16 +24,17 @@ func (r *RegisterUserUseCaseHandler) HandlerRegisterUserUseCase(u entities.User)
 	fmt.Printf("[register_user_use_case] FirstName: [%v]", u.FirstName)
 	fmt.Printf("[register_user_use_case] LastName: [%v]", u.LastName)
 	fmt.Printf("[register_user_use_case] Email: [%v]", u.Email)
+	fmt.Printf("[register_user_use_case] UserName: [%v]", u.UserName)
 	fmt.Printf("[register_user_use_case] Password: [%v]", u.Password)
 
 	user := entities.User{
-		IdUser:    "14515778",
-		Rut:       "145157781",
-		FirstName: "michael",
-		LastName:  "clark",
-		Email:     "mclark@gmail.com",
-		UserName:  "mclark",
-		Password:  "123456",
+		IdUser:    u.Rut,
+		Rut:       u.Rut,
+		FirstName: u.FirstName,
+		LastName:  u.LastName,
+		Email:     u.Email,
+		UserName:  u.UserName,
+		Password:  u.Password,
 	}
 	fmt.Println(user)
 

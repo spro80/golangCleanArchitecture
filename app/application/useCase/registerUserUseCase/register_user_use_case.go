@@ -2,9 +2,12 @@ package registerUserUseCase
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/spro80/golangCleanArchitecture/app/domain/entities"
 )
+
+var validate *validator.Validate
 
 type RegisterUserUseCaseInterface interface {
 	HandlerRegisterUserUseCase(u entities.User) (entities.User, error)
@@ -37,6 +40,13 @@ func (r *RegisterUserUseCaseHandler) HandlerRegisterUserUseCase(u entities.User)
 		Password:  u.Password,
 	}
 	fmt.Println(user)
+
+	validate = validator.New()
+	err := validate.Struct(user)
+	if err != nil {
+		fmt.Println("[register_user_use_case] Error in validation in creation of Entity")
+		return user, err
+	}
 
 	/*gatewayUser := gateways.NewOrderGateway(&models.UserModel{}, &repository.UserRepository{})
 	user, err := gatewayUser.SaveUser(&user)

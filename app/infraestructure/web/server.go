@@ -31,7 +31,7 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 
 func (ws WebServerHandler) InitRoutes(
 	templateCtrl templateController.TemplateControllerInterface,
-	registerUserCtrl registerUserController.RegisterUserControllerInterface) {
+	registerUserCtrl registerUserController.ControllerRegisterUserInterface) {
 
 	fmt.Println("[server] Init in InitRoutes")
 	//config := config.NewConfig()

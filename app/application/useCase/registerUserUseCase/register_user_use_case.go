@@ -2,25 +2,25 @@ package registerUserUseCase
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 
 	"github.com/spro80/golangCleanArchitecture/app/domain/entities"
 )
 
-var validate *validator.Validate
-
-type RegisterUserUseCaseInterface interface {
-	HandlerRegisterUserUseCase(u entities.User) (entities.User, error)
+type UseCaseRegisterUserInterface interface {
+	HandlerRegisterUserUseCase(u *entities.User) (*entities.User, int, error)
 }
 
-type RegisterUserUseCaseHandler struct {
+type UseCaseRegisterUserHandler struct {
 }
 
-func NewRegisterUserUseCase() *RegisterUserUseCaseHandler {
-	return &RegisterUserUseCaseHandler{}
+func NewRegisterUserUseCase() *UseCaseRegisterUserHandler {
+	return &UseCaseRegisterUserHandler{}
 }
 
-func (r *RegisterUserUseCaseHandler) HandlerRegisterUserUseCase(u entities.User) (entities.User, error) {
+func (r *UseCaseRegisterUserHandler) HandlerRegisterUserUseCase(u *entities.User) (*entities.User, int, error) {
 	fmt.Println("[register_user_use_case] Init in HandlerRegisterUserUseCase")
 
 	fmt.Printf("[register_user_use_case] Rut: [%v]", u.Rut)
@@ -41,11 +41,10 @@ func (r *RegisterUserUseCaseHandler) HandlerRegisterUserUseCase(u entities.User)
 	}
 	fmt.Println(user)
 
-	validate = validator.New()
-	err := validate.Struct(user)
+	err := validateUser(&user)
 	if err != nil {
-		fmt.Println("[register_user_use_case] Error in validation in creation of Entity")
-		return user, err
+		fmt.Printf("[register_user_use_case] Error in validation of Entity User : [%s]", err.Error())
+		return &user, http.StatusBadRequest, err
 	}
 
 	/*gatewayUser := gateways.NewOrderGateway(&models.UserModel{}, &repository.UserRepository{})
@@ -56,5 +55,16 @@ func (r *RegisterUserUseCaseHandler) HandlerRegisterUserUseCase(u entities.User)
 	}*/
 
 	fmt.Println("[register_user_use_case] End in HandlerRegisterUserUseCase")
-	return user, nil
+	return &user, http.StatusCreated, nil
+}
+
+func validateUser(user *entities.User) error {
+	var validate *validator.Validate
+
+	validate = validator.New()
+	err := validate.Struct(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }

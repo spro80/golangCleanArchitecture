@@ -7,31 +7,33 @@ import (
 	"github.com/spro80/golangCleanArchitecture/app/domain/entities"
 )
 
-type RegisterUserControllerInterface interface {
-	HandlerRegisterUserController(u entities.User) error
+type ControllerRegisterUserInterface interface {
+	HandlerRegisterUserController(u *entities.User) (*entities.User, int, error)
 }
 
-type RegisterUserControllerHandler struct {
-	useCase registerUserUseCase.RegisterUserUseCaseInterface
+type ControllerRegisterUserHandler struct {
+	useCase registerUserUseCase.UseCaseRegisterUserInterface
 }
 
-func NewRegisterUserController(useCase registerUserUseCase.RegisterUserUseCaseInterface) *RegisterUserControllerHandler {
-	return &RegisterUserControllerHandler{useCase: useCase}
+func NewRegisterUserController(useCase registerUserUseCase.UseCaseRegisterUserInterface) *ControllerRegisterUserHandler {
+	return &ControllerRegisterUserHandler{useCase: useCase}
 }
 
-func (r *RegisterUserControllerHandler) HandlerRegisterUserController(u entities.User) error {
+func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(u *entities.User) (*entities.User, int, error) {
 	fmt.Println("[register_user_controller] Init in HandlerRegisterUserController")
 	fmt.Printf("[register_user_controller] UserName: [%v]", u.UserName)
 
 	fmt.Println("[register_user_controller] Calling HandlerRegisterUserUseCase")
-	userEntity, err := r.useCase.HandlerRegisterUserUseCase(u)
+	userEntity, statusCode, err := r.useCase.HandlerRegisterUserUseCase(u)
 	if err != nil {
 		fmt.Printf("[register_user_controller] Error: [%s]", err.Error())
+		return userEntity, statusCode, err
 	}
 
-	fmt.Println("[register_user_controller] userEntity: [%v]", userEntity)
+	fmt.Printf("[register_user_controller] userEntity: [%v]", userEntity)
+	fmt.Printf("[register_user_controller] userEntity: [%d]", statusCode)
 	fmt.Println("[register_user_controller] HandlerRegisterUserUseCase was called successfully")
 	fmt.Println("[register_user_controller] End in HandlerRegisterUserController")
 
-	return nil
+	return userEntity, statusCode, nil
 }

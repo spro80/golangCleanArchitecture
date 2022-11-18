@@ -1,64 +1,55 @@
 package registerUserUseCase
 
 import (
+	"context"
 	"fmt"
+	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity/interfaces"
+	"github.com/spro80/golangCleanArchitecture/app/domain/interfaces_gateway"
 	"net/http"
-
-	"github.com/go-playground/validator/v10"
-
-	"github.com/spro80/golangCleanArchitecture/app/domain/entities"
 )
 
 type UseCaseRegisterUserInterface interface {
-	HandlerRegisterUserUseCase(u *entities.User) (*entities.User, int, error)
+	HandlerRegisterUserUseCase(ctx context.Context, userEntity user_entities_interface.UserEntityInterface) (user_entities_interface.UserEntityInterface, int, error)
 }
 
 type UseCaseRegisterUserHandler struct {
+	userGateway interfaces_gateway.RepositoryGatewayInterface
 }
 
-func NewRegisterUserUseCase() *UseCaseRegisterUserHandler {
-	return &UseCaseRegisterUserHandler{}
+func NewRegisterUserUseCase(userGateway interfaces_gateway.RepositoryGatewayInterface) *UseCaseRegisterUserHandler {
+	return &UseCaseRegisterUserHandler{userGateway}
 }
 
-func (r *UseCaseRegisterUserHandler) HandlerRegisterUserUseCase(u *entities.User) (*entities.User, int, error) {
-	fmt.Println("[register_user_use_case] Init in HandlerRegisterUserUseCase")
+func (ru *UseCaseRegisterUserHandler) HandlerRegisterUserUseCase(ctx context.Context, userEntity user_entities_interface.UserEntityInterface) (user_entities_interface.UserEntityInterface, int, error) {
+	fmt.Printf("\n [register_user_use_case] Init in HandlerRegisterUserUseCase")
 
-	fmt.Printf("[register_user_use_case] Rut: [%v]", u.Rut)
-	fmt.Printf("[register_user_use_case] FirstName: [%v]", u.FirstName)
-	fmt.Printf("[register_user_use_case] LastName: [%v]", u.LastName)
-	fmt.Printf("[register_user_use_case] Email: [%v]", u.Email)
-	fmt.Printf("[register_user_use_case] UserName: [%v]", u.UserName)
-	fmt.Printf("[register_user_use_case] Password: [%v]", u.Password)
-
-	user := entities.User{
-		IdUser:    u.Rut,
-		Rut:       u.Rut,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
-		Email:     u.Email,
-		UserName:  u.UserName,
-		Password:  u.Password,
-	}
-	fmt.Println(user)
-
-	err := validateUser(&user)
+	userResponse, err := ru.userGateway.FindUserByRut(userEntity.GetRut())
 	if err != nil {
-		fmt.Printf("[register_user_use_case] Error in validation of Entity User : [%s]", err.Error())
-		return &user, http.StatusBadRequest, err
+		fmt.Printf("\n [register_user_use_case] Error in FindUserByRut:[%s] with error:[%s]", userResponse.GetRut(), err.Error())
+		//TODO: create error from database
+		return nil, http.StatusBadRequest, err
+	}
+	fmt.Printf("\n [register_user_use_case] userResponse:[%v]", userResponse)
+
+	if userResponse.GetRut() == "" {
+		userSave, errGateway := ru.userGateway.SaveUser(ctx, userEntity)
+		if errGateway != nil {
+			fmt.Printf("\n [register_user_use_case] Error in Save User | RUT:[%s]  | Messagge Error:[%s]", userResponse.GetRut(), errGateway.Error())
+			//TODO: create error from database
+			return nil, http.StatusBadRequest, err
+		}
+		fmt.Println("\n [register_user_use_case] User was saved successfully")
+		return userSave, http.StatusCreated, nil
+	} else {
+		fmt.Println("\n [register_user_use_case] User was not saved. User already exists")
+		return nil, http.StatusOK, nil
 	}
 
-	/*gatewayUser := gateways.NewOrderGateway(&models.UserModel{}, &repository.UserRepository{})
-	user, err := gatewayUser.SaveUser(&user)
-	if err != nil {
-		fmt.Println("Error")
-		return err
-	}*/
-
-	fmt.Println("[register_user_use_case] End in HandlerRegisterUserUseCase")
-	return &user, http.StatusCreated, nil
+	return nil, http.StatusOK, nil
 }
 
-func validateUser(user *entities.User) error {
+/*
+func validateUser(user *user_entity.User) error {
 	var validate *validator.Validate
 
 	validate = validator.New()
@@ -68,3 +59,4 @@ func validateUser(user *entities.User) error {
 	}
 	return nil
 }
+*/

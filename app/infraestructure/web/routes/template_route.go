@@ -2,9 +2,9 @@ package routes
 
 import (
 	"fmt"
+	controllers "github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/templateController"
 
 	"github.com/labstack/echo/v4"
-	controllers "github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
 )
 
 type TemplateRouteInterface interface {

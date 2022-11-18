@@ -1,4 +1,4 @@
-package models
+package request_models
 
 type User struct {
 	Rut       string `json:"rut"`
@@ -7,4 +7,5 @@ type User struct {
 	Email     string `json:"email"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	Valid     bool   `json:"valid"`
 }

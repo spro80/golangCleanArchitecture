@@ -1,4 +1,4 @@
-package models
+package response_models
 
 type ResponseModelError struct {
 	Status      int

@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/registerUserUseCase"
-	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user/interfaces"
+	"github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity"
+	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity/interfaces"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/models/request_models"
 )
 
@@ -22,25 +23,42 @@ func NewRegisterUserController(useCase registerUserUseCase.UseCaseRegisterUserIn
 
 //func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(u *user.User) (*user.User, int, error) {
 func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(ctx context.Context, requestUser *request_models.User) (user_entities_interface.UserEntityInterface, int, error) {
-	fmt.Println("[register_user_controller] Init in HandlerRegisterUserController")
-	fmt.Printf("[register_user_controller] [%s]", ctx)
-	fmt.Printf("[register_user_controller] [%v]", requestUser)
-	//fmt.Printf("[register_user_controller] UserName: [%v]", u.UserName)
+	fmt.Println("\n [register_user_controller] Init in HandlerRegisterUserController")
+
 	/*
-		userInterface := user.NewUserEntity()
-
-		fmt.Println("[register_user_controller] Calling HandlerRegisterUserUseCase")
-		userEntity, statusCode, err := r.useCase.HandlerRegisterUserUseCase(ctx, userInterface)
-		if err != nil {
-			fmt.Printf("[register_user_controller] Error: [%s]", err.Error())
-			return nil, statusCode, err
-		}
+		userEntityData := user_entity.NewUserEntity()
+		userEntityData.SetRut(requestUser.Rut)
+		userEntityData.SetFirstName(requestUser.FirstName)
+		userEntityData.SetLastName(requestUser.LastName)
+		userEntityData.SetEmail(requestUser.Email)
+		userEntityData.SetUserName(requestUser.UserName)
+		userEntityData.SetPassword(requestUser.Password)
+		userEntityData.SetValid(requestUser.Valid)
 	*/
-	//fmt.Printf("[register_user_controller] userEntity: [%v]", userEntity)
-	//fmt.Printf("[register_user_controller] userEntity: [%d]", statusCode)
-	fmt.Println("[register_user_controller] HandlerRegisterUserUseCase was called successfully")
-	fmt.Println("[register_user_controller] End in HandlerRegisterUserController")
+	userEntityData := r.createUserEntity(requestUser)
 
-	return nil, 200, nil
-	//return userEntity, statusCode, nil
+	userEntity, statusCode, err := r.useCase.HandlerRegisterUserUseCase(ctx, userEntityData)
+	if err != nil {
+		fmt.Printf("\n [register_user_controller] User Rut: [%s] | Message Error from UseCase: [%s]", requestUser.Rut, err.Error())
+		return nil, statusCode, err
+	}
+
+	fmt.Printf("\n [register_user_controller] userEntity: [%v]", userEntity)
+	fmt.Printf("\n [register_user_controller] End of HandlerRegisterUserController | user RUT: [%s]", requestUser.Rut)
+
+	return userEntity, statusCode, nil
+}
+
+func (r *ControllerRegisterUserHandler) createUserEntity(requestUser *request_models.User) user_entities_interface.UserEntityInterface {
+
+	userEntityData := user_entity.NewUserEntity()
+	userEntityData.SetRut(requestUser.Rut)
+	userEntityData.SetFirstName(requestUser.FirstName)
+	userEntityData.SetLastName(requestUser.LastName)
+	userEntityData.SetEmail(requestUser.Email)
+	userEntityData.SetUserName(requestUser.UserName)
+	userEntityData.SetPassword(requestUser.Password)
+	userEntityData.SetValid(requestUser.Valid)
+
+	return userEntityData
 }

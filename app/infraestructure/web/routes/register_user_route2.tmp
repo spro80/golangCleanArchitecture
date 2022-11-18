@@ -1,0 +1,86 @@
+package routes
+
+import (
+	"context"
+	"fmt"
+	"github.com/labstack/echo/v4"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/middlewares"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/models/request_models"
+	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/models/response_models"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/registerUserController"
+	"net/http"
+	"reflect"
+)
+
+type RegisterUserRouteInterface interface {
+	HandlerRegisterUserRoute(ctx echo.Context) error
+}
+
+type RegisterUserRouteHandler struct {
+	controller registerUserController.ControllerRegisterUserInterface
+}
+
+func NewRegisterUserRoute(e *echo.Echo, controller registerUserController.ControllerRegisterUserInterface) *RegisterUserRouteHandler {
+	h := &RegisterUserRouteHandler{controller: controller}
+	e.POST("/registerUser", h.HandlerRegisterUserRoute, middlewares.ContextMiddleWare)
+	return h
+}
+
+func (r RegisterUserRouteHandler) HandlerRegisterUserRoute(ctx echo.Context) error {
+	fmt.Println("[register_user_route] Init in HandlerRegisterUserRoute")
+
+	fmt.Println("[register_user_route] Calling new request models.User")
+	//userRequest := request_model_user.User{}
+	userRequest := new(request_models.User)
+	fmt.Println("[register_user_route] after new request models.User")
+	fmt.Printf("[register_user_route] userRequest: [%s]", userRequest)
+	fmt.Printf("[register_user_route] userRequest typeOf: [%s]", reflect.TypeOf(userRequest))
+
+	err := ctx.Bind(userRequest)
+	if err != nil {
+		fmt.Printf("[register_user_route] Error processing userRequest. Error:[%s]", err.Error())
+		return ctx.JSON(http.StatusBadRequest, response_models.ResponseModelError{
+			Status:      400,
+			Description: "description",
+		})
+	}
+
+	/*var err0 error
+	userInfo := new(user.User)
+	if err0 = ctx.Bind(userInfo); err0 != nil {
+		return nil
+	}
+	*/
+
+	//contexto := ctx.Get("traceContext").(context.Context)
+	//contexto := ctx.Get("traceContext")
+	//contexto2 := contexto.(context.Context)
+
+	//contexto200 := ctx.Get("traceContext").(context.Context)
+	//contexto200 := ctx.Get("traceContext")
+	//fmt.Printf("[register_user_route] userRequest: [%v]", contexto200)
+
+	//user, statusCode, errCtrl := r.controller.HandlerRegisterUserController(ctx.Get("traceContext").(context.Context), userRequest)
+	//_, _, errCtrl := r.controller.HandlerRegisterUserController(ctx.Get("traceContext").(context.Context), userRequest)
+	//_, _, errCtrl := r.controller.HandlerRegisterUserController(, userRequest)
+
+	//_, _, errCtrl := r.controller.HandlerRegisterUserController(ctx.Get("traceContext").(context.Context), userRequest)
+
+	ctx.Set("trace", "123")
+	var info interface{} = ctx.Get("X-FORWARDED-PROTO")
+
+	_, _, errCtrl := r.controller.HandlerRegisterUserController(info.(context.Context), userRequest)
+	if errCtrl != nil {
+		fmt.Printf("error processing with error message: [%s]", errCtrl.Error())
+		return ctx.JSON(http.StatusBadRequest, response_models.ResponseModelError{
+			Status:      400,
+			Description: "descripcion",
+		})
+	}
+	//fmt.Printf("[register_user_route] user: [%v]", user)
+	//fmt.Printf("[register_user_route] statusCode: [%d]", statusCode)
+
+	fmt.Println("[register_user_route] End in HandlerRegisterUserRoute")
+	return nil
+
+}

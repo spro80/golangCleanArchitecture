@@ -7,6 +7,7 @@ type UserEntityInterface interface {
 	GetEmail() string
 	GetFirstName() string
 	GetLastName() string
+	GetValid() bool
 
 	SetRut(rut string) error
 	SetUserName(name string) error
@@ -14,4 +15,5 @@ type UserEntityInterface interface {
 	SetEmail(email string) error
 	SetFirstName(firstName string) error
 	SetLastName(lastName string) error
+	SetValid(valid bool) error
 }

@@ -1,4 +1,4 @@
-package entity
+package user_entity
 
 type User struct {
 	IdUser    string `json:"idUser" validate:"required"`
@@ -8,4 +8,5 @@ type User struct {
 	Email     string `json:"email" validate:"required,email"`
 	UserName  string `json:"userName" validate:"required"`
 	Password  string `json:"password" validate:"required"`
+	Valid     bool   `json:"valid" validate:"required"`
 }

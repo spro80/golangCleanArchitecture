@@ -1,7 +1,7 @@
-package user
+package user_entity
 
 import (
-	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user/interfaces"
+	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity/interfaces"
 )
 
 type userClient struct {
@@ -39,6 +39,10 @@ func (u *userClient) GetLastName() string {
 	return u.user.LastName
 }
 
+func (u *userClient) GetValid() bool {
+	return u.user.Valid
+}
+
 func (u *userClient) SetRut(rut string) error {
 	u.user.Rut = rut
 	return nil
@@ -66,5 +70,10 @@ func (u *userClient) SetFirstName(firstName string) error {
 
 func (u *userClient) SetLastName(lastName string) error {
 	u.user.LastName = lastName
+	return nil
+}
+
+func (u *userClient) SetValid(valid bool) error {
+	u.user.Valid = valid
 	return nil
 }

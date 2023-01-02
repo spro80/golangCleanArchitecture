@@ -2,12 +2,14 @@ package web
 
 import (
 	"fmt"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/getAllUserController"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/registerUserController"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/templateController"
+	"github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/registerUserController"
-	"github.com/spro80/golangCleanArchitecture/app/infraestructure/controllers/templateController"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/routes"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 )
@@ -30,15 +32,19 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 }
 
 func (ws WebServerHandler) InitRoutes(
-	templateCtrl templateController.TemplateControllerInterface,
-	registerUserCtrl registerUserController.ControllerRegisterUserInterface) {
+
+	responseInterface response.ResponseInterface,
+	templateCtrlInterface templateController.TemplateControllerInterface,
+	getAllUserCtrlInterface getAllUserController.ControllerGetAllUserInterface,
+	registerUserCtrlInterface registerUserController.ControllerRegisterUserInterface) {
 
 	fmt.Println("[server] Init in InitRoutes")
 	//config := config.NewConfig()
 
 	routes.NewHealthCheckRoute(ws.echoServer, ws.config)
-	routes.NewTemplateRoute(ws.echoServer, templateCtrl)
-	routes.NewRegisterUserRoute(ws.echoServer, registerUserCtrl)
+	routes.NewTemplateRoute(ws.echoServer, templateCtrlInterface)
+	routes.NewRegisterUserRoute(ws.echoServer, registerUserCtrlInterface, responseInterface)
+	routes.NewGetAllUserRoute(ws.echoServer, getAllUserCtrlInterface, responseInterface)
 	fmt.Println("[server] InitRoutes called successfully")
 }
 

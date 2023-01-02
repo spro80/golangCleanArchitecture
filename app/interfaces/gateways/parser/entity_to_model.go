@@ -6,6 +6,7 @@ import (
 )
 
 func UserEntityToModel(user user_entities_interface.UserEntityInterface) *models.UserModel {
+
 	userModel := models.UserModel{}
 	userModel.Rut = user.GetRut()
 	userModel.UserName = user.GetUserName()
@@ -13,6 +14,7 @@ func UserEntityToModel(user user_entities_interface.UserEntityInterface) *models
 	userModel.Email = user.GetEmail()
 	userModel.FirstName = user.GetFirstName()
 	userModel.LastName = user.GetLastName()
+	userModel.Valid = user.GetValid()
 
 	return &userModel
 }

@@ -47,6 +47,8 @@ func (r RegisterUserRouteHandler) HandlerRegisterUserRoute(serverContext echo.Co
 		return errBind
 	}
 
+	fmt.Printf("[register_user_route]  userRequest: [%v] ", userRequest)
+
 	user, statusCode, errCtrl := r.controller.HandlerRegisterUserController(serverContext.Get("traceContext").(context.Context), userRequest)
 	fmt.Printf("\n [register_user_route] user: [%v]", user)
 	fmt.Printf("\n [register_user_route] statusCode: [%d]", statusCode)
@@ -54,6 +56,11 @@ func (r RegisterUserRouteHandler) HandlerRegisterUserRoute(serverContext echo.Co
 	if errCtrl != nil {
 		fmt.Printf("\n [register_user_route] Error: [%s]", errCtrl.Error())
 	}
+	if user == nil {
+		response = r.responseStruct.HandlerCreateResponseSuccess(statusCode, "User already exist", "", "")
+		return serverContext.JSON(http.StatusOK, response)
+	}
+
 	fmt.Println("\n [register_user_route] End in HandlerRegisterUserRoute")
 
 	//response = r.response.CreateResponse(statusCode, "Register User was called successfully", "", "")

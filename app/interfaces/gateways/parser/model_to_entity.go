@@ -17,5 +17,21 @@ func UserModelToEntity(userModel *models.UserModel) user_entity_interface.UserEn
 	userEntity.SetLastName(userModel.LastName)
 	userEntity.SetValid(userModel.Valid)
 
+	profileEntity := user_entity.NewProfileEntity()
+	profileEntity.SetProfileId(666)
+	profileEntity.SetProfileStatus(false)
+	profileEntity.SetProfileDateInit("20666")
+	profileEntity.SetProfileDateEnd("20666")
+	profileEntity.SetProfileAllTime(false)
+
+	userEntity.SetProfile(profileEntity)
+
+	//Data profile
+	//userEntity.SetProfileId(userModel.Profile.ProfileId)
+	//userEntity.SetProfileStatus(userModel.Profile.ProfileStatus)
+	//userEntity.SetProfileDateInit(userModel.Profile.ProfileDateInit)
+	//userEntity.SetProfileDateEnd(userModel.Profile.ProfileDateEnd)
+	//userEntity.SetProfileStatus(userModel.Profile.ProfileStatus)
+
 	return userEntity
 }

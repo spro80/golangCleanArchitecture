@@ -2,6 +2,7 @@ package mongo_client
 
 import (
 	"context"
+	"fmt"
 	"github.com/labstack/gommon/log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -149,11 +150,14 @@ func (md *mongoDatabase) Client() MongoClientInterface {
 func (mc *mongoCollection) FindOne(ctx interface{}, filter interface{}) SingleResultInterface {
 	var singleResult *mongo.SingleResult
 	ctxType := reflect.TypeOf(ctx).String()
+	log.Info("[mongo_client][FindOne] ctxType:[%v]", ctxType)
 	if ctxType == "*context.emptyCtx" ||
 		ctxType == "*context.valueCtx" || ctxType == "*context.cancelCtx" {
+		log.Info("[mongo_client][FindOne] in if ctxType:[%v]", ctxType)
 		sessionContext := (ctx).(context.Context)
 		singleResult = mc.coll.FindOne(sessionContext, filter)
 	} else {
+		log.Info("[mongo_client][FindOne] in else ctxType:[%v]", ctxType)
 		sessionContext := (ctx).(mongo.SessionContext)
 		singleResult = mc.coll.FindOne(sessionContext, filter)
 	}
@@ -181,6 +185,7 @@ func (mc *mongoCollection) InsertOne(ctx interface{}, document interface{}) (str
 	ctxType := reflect.TypeOf(ctx).String()
 	if ctxType == "*context.emptyCtx" ||
 		ctxType == "*context.valueCtx" || ctxType == "*context.cancelCtx" {
+		fmt.Printf("\n [mongo_client] In if: [%s] ", reflect.TypeOf(ctx).String())
 		sessionContext := (ctx).(context.Context)
 		id, err = mc.coll.InsertOne(sessionContext, document)
 	} else {
@@ -198,10 +203,23 @@ func (mc *mongoCollection) InsertOne(ctx interface{}, document interface{}) (str
 func (mc *mongoCollection) DeleteOne(ctx interface{}, filter interface{}) (int64, error) {
 	var count *mongo.DeleteResult
 	var err error
-	if reflect.TypeOf(ctx).String() == "*context.emptyCtx" {
+
+	ctxType := reflect.TypeOf(ctx).String()
+
+	log.Info("\n [mongo_client] ctxType: %s", ctxType)
+	fmt.Printf("\n [mongo_client] ctxType: [%s] ", ctxType)
+	if ctxType == "*context.emptyCtx" || ctxType == "*context.valueCtx" || ctxType == "*context.cancelCtx" {
+		fmt.Printf("\n [mongo_client] In if ctxType: [%s] ", reflect.TypeOf(ctx).String())
 		sessionContext := (ctx).(context.Context)
 		count, err = mc.coll.DeleteOne(sessionContext, filter)
+		fmt.Printf("\n [mongo_client] In if count: [%v] ", count)
+		fmt.Printf("\n [mongo_client] In if count.DeletedCount: [%v] ", count.DeletedCount)
+		if err != nil {
+			fmt.Printf("\n [mongo_client] In if error: [%s] ", err.Error())
+		}
+
 	} else {
+		fmt.Printf("\n [mongo_client] In else ctxType: [%s] ", ctxType)
 		sessionContext := (ctx).(mongo.SessionContext)
 		count, err = mc.coll.DeleteOne(sessionContext, filter)
 	}

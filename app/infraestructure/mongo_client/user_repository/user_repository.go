@@ -18,6 +18,7 @@ type UserRepositoryInterface interface {
 	FindUserByRut(userRut string) (*models.UserModel, error)
 	FindAllUsers(ctx context.Context) ([]models.UserModel, error)
 	SaveUser(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error)
+	DeleteUserByRut(ctx context.Context, userRut string) (int64, error)
 }
 
 type UserRepository struct {
@@ -64,6 +65,7 @@ func (ur *UserRepository) FindAllUsers(ctx context.Context) ([]models.UserModel,
 	filter := bson.M{
 		"valid": bson.M{"$eq": true},
 	}
+
 	cursor, errFind := ur.collection.Find(ctx, filter, opts)
 	if errFind != nil {
 		log.Error("[user_repository][FindAllUsers] Error in Find with message: [%s]", errFind.Error())
@@ -83,6 +85,9 @@ func (ur *UserRepository) FindAllUsers(ctx context.Context) ([]models.UserModel,
 		if len(userList) == 0 {
 			fmt.Println("There is not Users in the DB")
 		}*/
+
+	fmt.Printf("\n [user_repository][FindAllUsers] userListModels:")
+	fmt.Printf("\n userListModels:[%v]", userListModels)
 
 	fmt.Printf("\n [user_repository][FindAllUsers] End FindAllUsers")
 	return userListModels, nil
@@ -114,4 +119,18 @@ func (ur *UserRepository) SaveUser(ctx context.Context, user *models.UserModel, 
 	user.ID = insertId
 	fmt.Printf("\n [user_repository][SaveUser] User was saved succesfully | user Rut: [%s] ", user.Rut)
 	return user, nil
+}
+
+func (ur *UserRepository) DeleteUserByRut(ctx context.Context, userRut string) (int64, error) {
+	fmt.Printf("\n [user_repository][DeleteUserByRut] Init in DeleteUserByRut | User Rut: [%s] ", userRut)
+
+	//ctx := context.Background()
+	filter := bson.M{"rut": userRut}
+	count, err := ur.collection.DeleteOne(ctx, filter)
+	if err != nil {
+		fmt.Printf("\n [user_repository][DeleteUserByRut] Error delete one | userRut: [%s] | error: [%s]", userRut, err.Error())
+	}
+
+	fmt.Printf("\n [user_repository][DeleteUserByRut] End DeleteUserByRut | User Rut:[%s]", userRut)
+	return count, nil
 }

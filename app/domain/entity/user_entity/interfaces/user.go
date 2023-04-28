@@ -1,4 +1,4 @@
-package interfaces
+package user_entity_interface
 
 type UserEntityInterface interface {
 	GetRut() string
@@ -8,6 +8,7 @@ type UserEntityInterface interface {
 	GetFirstName() string
 	GetLastName() string
 	GetValid() bool
+	GetProfile() ProfileEntityInterface
 
 	SetRut(rut string) error
 	SetUserName(name string) error
@@ -16,4 +17,19 @@ type UserEntityInterface interface {
 	SetFirstName(firstName string) error
 	SetLastName(lastName string) error
 	SetValid(valid bool) error
+	SetProfile(profile ProfileEntityInterface) error
+}
+
+type ProfileEntityInterface interface {
+	GetProfileId() int
+	GetProfileStatus() bool
+	GetProfileDateInit() string
+	GetProfileDateEnd() string
+	GetProfileAllTime() bool
+
+	SetProfileId(profileId int) error
+	SetProfileStatus(profileStatus bool) error
+	SetProfileDateInit(profileDateInit string) error
+	SetProfileDateEnd(profileDateEnd string) error
+	SetProfileAllTime(profileAllTime bool) error
 }

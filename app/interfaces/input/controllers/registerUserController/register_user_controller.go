@@ -60,5 +60,15 @@ func (r *ControllerRegisterUserHandler) createUserEntity(requestUser *request_mo
 	userEntityData.SetPassword(requestUser.Password)
 	userEntityData.SetValid(requestUser.Valid)
 
+	profile := user_entity.NewProfileEntity()
+	profile.SetProfileId(requestUser.Profile.ProfileId)
+	profile.SetProfileStatus(requestUser.Profile.ProfileStatus)
+	profile.SetProfileDateInit(requestUser.Profile.ProfileDateInit)
+	profile.SetProfileDateEnd(requestUser.Profile.ProfileDateEnd)
+	profile.SetProfileAllTime(requestUser.Profile.ProfileAllTime)
+
+	userEntityData.SetProfile(profile)
+	fmt.Printf("\n [register_user_controller] userEntityData:[%v]", &userEntityData)
+
 	return userEntityData
 }

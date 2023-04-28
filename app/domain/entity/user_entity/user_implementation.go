@@ -8,11 +8,22 @@ type userClient struct {
 	user *User
 }
 
+type profileClient struct {
+	profile *Profile
+}
+
 func NewUserEntity() user_entities_interface.UserEntityInterface {
 	userClient := &userClient{
 		user: &User{},
 	}
 	return userClient
+}
+
+func NewProfileEntity() user_entities_interface.ProfileEntityInterface {
+	profileClient := &profileClient{
+		profile: &Profile{},
+	}
+	return profileClient
 }
 
 func (u *userClient) GetRut() string {
@@ -41,6 +52,30 @@ func (u *userClient) GetLastName() string {
 
 func (u *userClient) GetValid() bool {
 	return u.user.Valid
+}
+
+func (u *userClient) GetProfile() user_entities_interface.ProfileEntityInterface {
+	return u.user.Profile
+}
+
+func (p *profileClient) GetProfileId() int {
+	return p.profile.ProfileId
+}
+
+func (p *profileClient) GetProfileStatus() bool {
+	return p.profile.ProfileStatus
+}
+
+func (p *profileClient) GetProfileDateInit() string {
+	return p.profile.ProfileDateInit
+}
+
+func (p *profileClient) GetProfileDateEnd() string {
+	return p.profile.ProfileDateEnd
+}
+
+func (p *profileClient) GetProfileAllTime() bool {
+	return p.profile.ProfileAllTime
 }
 
 func (u *userClient) SetRut(rut string) error {
@@ -75,5 +110,35 @@ func (u *userClient) SetLastName(lastName string) error {
 
 func (u *userClient) SetValid(valid bool) error {
 	u.user.Valid = valid
+	return nil
+}
+
+func (u *userClient) SetProfile(profile user_entities_interface.ProfileEntityInterface) error {
+	u.user.Profile = profile
+	return nil
+}
+
+func (p *profileClient) SetProfileId(profileId int) error {
+	p.profile.ProfileId = profileId
+	return nil
+}
+
+func (p *profileClient) SetProfileStatus(profileStatus bool) error {
+	p.profile.ProfileStatus = profileStatus
+	return nil
+}
+
+func (p *profileClient) SetProfileDateInit(profileDateInit string) error {
+	p.profile.ProfileDateInit = profileDateInit
+	return nil
+}
+
+func (p *profileClient) SetProfileDateEnd(profileDateEnd string) error {
+	p.profile.ProfileDateEnd = profileDateEnd
+	return nil
+}
+
+func (p *profileClient) SetProfileAllTime(profileAllTime bool) error {
+	p.profile.ProfileAllTime = profileAllTime
 	return nil
 }

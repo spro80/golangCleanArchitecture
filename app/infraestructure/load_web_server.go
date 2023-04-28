@@ -2,6 +2,7 @@ package infraestructure
 
 import (
 	"fmt"
+	deleteUserUseCase2 "github.com/spro80/golangCleanArchitecture/app/application/useCase/deleteUserUseCase"
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/getAllUserUseCase"
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/registerUserUseCase"
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/templateUseCase"
@@ -9,6 +10,7 @@ import (
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/mongo_client/user_repository"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/gateways/user_gateway"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/deleteUserController"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/getAllUserController"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/registerUserController"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/templateController"
@@ -52,19 +54,23 @@ func (ws LoadHandler) LoadRoutes() {
 	//Load gateways
 	userGateway := user_gateway.NewRepositoryGateway(userRepository)
 
+	// UseCase
 	//Load useCase: (Are used as dependency injection in controllers.)
 	templateUseCase := templateUseCase.NewTemplateUseCase()
+
+	// UseCase: User
 	getAllUserUseCase := getAllUserUseCase.NewGetAllUserUseCase(userGateway)
 	registerUserUseCase := registerUserUseCase.NewRegisterUserUseCase(userGateway)
+	deleteUserUseCase := deleteUserUseCase2.NewDeleteUserUseCase(userGateway)
 
 	//Load Controller
 	templateCtrl := templateController.NewTemplateController(templateUseCase)
 	getAllUserCtrl := getAllUserController.NewGetAllUserController(getAllUserUseCase)
 	registerUserCtrl := registerUserController.NewRegisterUserController(registerUserUseCase)
+	deleteUserCtrl := deleteUserController.NewDeleteUserController(deleteUserUseCase)
 
 	//Calling initialize routes
-	ws.web.InitRoutes(responseStruct, templateCtrl, getAllUserCtrl, registerUserCtrl)
-
+	ws.web.InitRoutes(responseStruct, templateCtrl, getAllUserCtrl, registerUserCtrl, deleteUserCtrl)
 }
 
 func LoadDatabase() (mongo_client.MongoClientInterface, error) {

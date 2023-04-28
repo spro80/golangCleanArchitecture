@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const (
@@ -26,6 +27,7 @@ const (
 	ParentID                      = "parentId"
 	TraceFlags                    = "traceFlags"
 	SpanID                        = "spanId"
+	CreatedAt                     = "createdAt"
 	TraceParent                   = "traceparent"
 	InputTraceParent              = "inputTraceParent"
 	OutputTraceParent             = "outputTraceParent"
@@ -38,22 +40,25 @@ func CreateTraceContext(traceInput string) context.Context {
 	traceContext := context.Background()
 	traceGenerated, ok := BuildTraceParent(traceInput)
 	if !ok {
-		fmt.Printf("%s %s Headers: %v", InputTraceParent, TraceParentInvalidFormat, traceInput)
+		//log.Error("%s %s Headers: %v", InputTraceParent, TraceParentInvalidFormat, traceInput)
 	}
 	traceContext = FillContextFromTraceComponent(traceGenerated, traceContext)
 	return traceContext
 }
 
-/*
-func GetLogFromContext(ctx context.Context, layer string, module string) *log.Logger {
+/*func GetLogFromContext(ctx context.Context, layer string, module string) *log.Logger {
 	return log.NewLogger(ctx, log.Fields{
 		"Layer":  layer,
 		"Module": module,
 	})
-}
-*/
+}*/
 
-func BuildTraceParent(traceParent string) (map[string]string, bool) {
+func GetElapsedTimeFromContext(ctx context.Context) float64 {
+	createdAt := ctx.Value("CreatedAt").(time.Time)
+	return time.Since(createdAt).Seconds()
+}
+
+func BuildTraceParent(traceParent string) (map[string]interface{}, bool) {
 	validFormat := false
 	if validateRegex(traceParent, validTraceParentRegex) {
 		validFormat = true
@@ -64,12 +69,13 @@ func BuildTraceParent(traceParent string) (map[string]string, bool) {
 	if (len(strings.Split(traceParent, TraceParentComponentSeparator)) == traceParentComponentNumber) && validFormat {
 		traceParentComponent = strings.Split(traceParent, TraceParentComponentSeparator)
 	}
-	traceComponent := map[string]string{}
+	traceComponent := map[string]interface{}{}
 	traceComponent[TraceVersion] = fillOutTraceComponent(traceParentComponent[0], traceVersionLarge)
 	traceComponent[TraceID] = fillOutTraceComponent(traceParentComponent[1], traceIDLarge)
 	traceComponent[ParentID] = fillOutTraceComponent(traceParentComponent[2], ParentIDLarge)
 	traceComponent[TraceFlags] = fillOutTraceComponent(traceParentComponent[3], traceFlagsLarge)
 	traceComponent[SpanID] = spanID
+	traceComponent[CreatedAt] = time.Now()
 	return traceComponent, validFormat
 }
 
@@ -90,12 +96,18 @@ func BuildOutputTraceParent(ctx context.Context) string {
 	return traceOutput
 }
 
-func FillContextFromTraceComponent(traceComponent map[string]string, ctx context.Context) context.Context {
+func FillContextFromTraceComponent(traceComponent map[string]interface{}, ctx context.Context) context.Context {
 	ctx = context.WithValue(ctx, "TraceVersion", traceComponent[TraceVersion])
 	ctx = context.WithValue(ctx, "TraceID", traceComponent[TraceID])
 	ctx = context.WithValue(ctx, "ParentID", traceComponent[ParentID])
 	ctx = context.WithValue(ctx, "TraceFlags", traceComponent[TraceFlags])
 	ctx = context.WithValue(ctx, "SpanID", traceComponent[SpanID])
+	ctx = context.WithValue(ctx, "CreatedAt", traceComponent[CreatedAt])
+	return ctx
+}
+
+func FillContextFromMap(ctx context.Context, mapValue map[string]string) context.Context {
+	ctx = context.WithValue(ctx, "fieldsToLog", mapValue)
 	return ctx
 }
 

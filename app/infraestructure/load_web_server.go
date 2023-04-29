@@ -3,12 +3,15 @@ package infraestructure
 import (
 	"fmt"
 	use_case_user_add "github.com/spro80/golangCleanArchitecture/app/application/useCase/user_add_use_case"
+	"github.com/spro80/golangCleanArchitecture/app/application/useCase/user_delete_use_case"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/mongo_client"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/mongo_client/user_repository"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/gateways/user_gateway"
 	controllers_add_user_controller "github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/user_add_controller"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/user_delete_controller"
 	source_user_input_add_v1 "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/add/v1"
+	source_user_input_delete_v1 "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/delete/v1"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
 	shared_utils_response "github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
 )
@@ -53,22 +56,25 @@ func (ws LoadHandler) LoadRoutes() {
 	// Load UseCase
 	// User UseCase
 	userAddUseCase := use_case_user_add.NewUserAddUseCase(userGateway)
+	userDeleteUseCase := user_delete_use_case.NewUserDeleteUseCase(userGateway)
 	//getAllUserUseCase := getAllUserUseCase.NewGetAllUserUseCase(userGateway)
 	//deleteUserUseCase := deleteUserUseCase2.NewDeleteUserUseCase(userGateway)
 
 	//Load Controller
 	userAddController := controllers_add_user_controller.NewUserAddController(userAddUseCase)
+	userDeleteController := user_delete_controller.NewUserDeleteController(userDeleteUseCase)
 	//templateCtrl := templateController.NewTemplateController(templateUseCase)
 	//getAllUserCtrl := getAllUserController.NewGetAllUserController(getAllUserUseCase)
 	//deleteUserCtrl := deleteUserController.NewDeleteUserController(deleteUserUseCase)
 
 	//Load Input
 	userAddInput := source_user_input_add_v1.NewFromApi(userAddController, sharedUtilsResponse)
+	userDeleteInput := source_user_input_delete_v1.NewFromApi(userDeleteController, sharedUtilsResponse)
 
 	//Calling initialize routes
 	//ws.web.InitRoutes(responseStruct, templateCtrl, getAllUserCtrl, userAddController, deleteUserCtrl)
 	//ws.web.InitRoutes(responseStruct, templateCtrl, userAddController)
-	ws.web.InitRoutes(userAddInput)
+	ws.web.InitRoutes(userAddInput, userDeleteInput)
 }
 
 func LoadDatabase() (mongo_client.MongoClientInterface, error) {

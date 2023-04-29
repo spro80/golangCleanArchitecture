@@ -29,13 +29,14 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 }
 
 func (ws WebServerHandler) InitRoutes(
-	userAddInputV1FromApi source.FromApiInterface) {
+	userAddInputV1FromApi source.FromApiInterface,
+	userDeleteInputV1FromApi source.FromApiInterface) {
 
 	fmt.Println("[server] Init in InitRoutes")
 	//config := config.NewConfig()
 
 	routes.NewHealthCheckRoute(ws.echoServer, ws.config)
-	routes.NewUserAddRoute(ws.echoServer, userAddInputV1FromApi)
+	routes.NewUserAddRoute(ws.echoServer, userAddInputV1FromApi, userDeleteInputV1FromApi)
 	//routes.NewGetAllUserRoute(ws.echoServer, getAllUserCtrlInterface, responseInterface)
 	//routes.NewDeleteUserRoute(ws.echoServer, deleteUserCtrlInterface, responseInterface)
 	fmt.Println("[server] InitRoutes called successfully")

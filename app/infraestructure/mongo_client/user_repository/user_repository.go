@@ -18,6 +18,7 @@ type UserRepositoryInterface interface {
 	FindUserByRut(userRut string) (*models.UserModel, error)
 	FindAllUsers(ctx context.Context) ([]models.UserModel, error)
 	SaveUser(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error)
+	UserUpdate(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error)
 	DeleteUserByRut(ctx context.Context, userRut string) (int64, error)
 }
 
@@ -118,6 +119,48 @@ func (ur *UserRepository) SaveUser(ctx context.Context, user *models.UserModel, 
 
 	user.ID = insertId
 	fmt.Printf("\n [user_repository][SaveUser] User was saved succesfully | user Rut: [%s] ", user.Rut)
+	return user, nil
+}
+
+func (ur *UserRepository) UserUpdate(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error) {
+
+	fmt.Printf("\n [user_repository][UserUpdate] Init in UserUpdate | User Rut: [%s] ", user.Rut)
+
+	if contextSession != nil {
+		ctx = contextSession[0]
+	}
+
+	filter := bson.M{"rut": user.Rut}
+	update := bson.M{
+		"$set": bson.M{
+			"userName":  user.UserName,
+			"password":  user.Password,
+			"email":     user.Email,
+			"firstName": user.FirstName,
+			"lastName":  user.LastName,
+			"valid":     user.Valid,
+		},
+	}
+
+	modifiedCount, err := ur.collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		fmt.Printf("\n [user_repository][UserUpdate] Error updating user | user Rut: [%s]", user.Rut)
+		//TODO: create error generic
+		return nil, err
+	}
+	fmt.Println(modifiedCount)
+
+	//idWithoutObjectId := strings.Replace(id, "ObjectID(\"", "", -1)
+	//idWithoutObjectId = strings.Replace(idWithoutObjectId, "\")", "", -1)
+	//insertId, err := primitive.ObjectIDFromHex(idWithoutObjectId)
+	if err != nil {
+		fmt.Printf("Error : [%s] ", err.Error())
+		//TODO: create error generic
+		return nil, err
+	}
+
+	//user.ID = insertId
+	fmt.Printf("\n [user_repository][UserUpdate] User was updated succesfully | user Rut: [%s] ", user.Rut)
 	return user, nil
 }
 

@@ -11,11 +11,15 @@ type userAddRouteInterface interface {
 }
 
 type userAddRouteHandler struct {
-	userAddInput source.FromApiInterface
+	userAddInput    source.FromApiInterface
+	userDeleteInput source.FromApiInterface
 }
 
-func NewUserAddRoute(e *echo.Echo, userAddInput source.FromApiInterface) *userAddRouteHandler {
-	user := &userAddRouteHandler{userAddInput}
-	e.POST("/api/v1/user/add-user", userAddInput.FromApi, middlewares.ContextMiddleWare)
+func NewUserAddRoute(e *echo.Echo, userAddInput source.FromApiInterface, userUpdateInput source.FromApiInterface, userDeleteInput source.FromApiInterface) *userAddRouteHandler {
+	user := &userAddRouteHandler{userAddInput, userDeleteInput}
+	e.POST("/api/v1/user/user-add", userAddInput.FromApi, middlewares.ContextMiddleWare)
+	e.PUT("/api/v1/user/user-update", userUpdateInput.FromApi, middlewares.ContextMiddleWare)
+	e.DELETE("/api/v1/user/delete-user/userId/:userId", userDeleteInput.FromApi, middlewares.ContextMiddleWare)
+
 	return user
 }

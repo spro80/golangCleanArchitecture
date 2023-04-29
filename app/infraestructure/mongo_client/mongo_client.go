@@ -21,9 +21,10 @@ type CollectionInterface interface {
 	Find(ctx context.Context, filter interface{}, opts *options.FindOptions) (CursorInterface, error)
 	FindOne(interface{}, interface{}) SingleResultInterface
 	InsertOne(ctx interface{}, param interface{}) (string, error)
+	UpdateOne(ctx interface{}, param interface{}, update interface{}) (int, error)
 	DeleteOne(ctx interface{}, filter interface{}) (int64, error)
 	UpsertOne(ctx, filter, update interface{}) (string, int64, int64, error)
-	UpdateOne(ctx interface{}, filter interface{}, update interface{}) (int, error)
+	UpdateMany(ctx interface{}, filter interface{}, update interface{}) (int, int, error)
 }
 
 type SingleResultInterface interface {
@@ -281,14 +282,39 @@ func (cr *MongoCursor) AllCursor(ctx context.Context, result interface{}) error 
 func (mc *mongoCollection) UpdateOne(ctx interface{}, filter interface{}, update interface{}) (int, error) {
 	var count *mongo.UpdateResult
 	var err error
+	opts := options.Update().SetUpsert(false)
+
 	ctxType := reflect.TypeOf(ctx).String()
 	if ctxType == "*context.emptyCtx" ||
 		ctxType == "*context.valueCtx" || ctxType == "*context.cancelCtx" {
 		sessionContext := (ctx).(context.Context)
-		count, err = mc.coll.UpdateOne(sessionContext, filter, update)
+		count, err = mc.coll.UpdateOne(sessionContext, filter, update, opts)
 	} else {
 		sessionContext := (ctx).(mongo.SessionContext)
-		count, err = mc.coll.UpdateOne(sessionContext, filter, update)
+		count, err = mc.coll.UpdateOne(sessionContext, filter, update, opts)
 	}
 	return int(count.ModifiedCount), err
+}
+
+func (mc *mongoCollection) UpdateMany(ctx interface{}, filter interface{}, update interface{}) (int, int, error) {
+	var updateResult *mongo.UpdateResult
+	var err error
+
+	opts := options.Update().SetUpsert(false)
+
+	if reflect.TypeOf(ctx).String() == "*context.emptyCtx" || reflect.TypeOf(ctx).String() == "*context.valueCtx" || reflect.TypeOf(ctx).String() == "*context.cancelCtx" {
+		sessionContext := (ctx).(context.Context)
+		updateResult, err = mc.coll.UpdateMany(sessionContext, filter, update, opts)
+	} else {
+		sessionContext := (ctx).(mongo.SessionContext)
+		updateResult, err = mc.coll.UpdateMany(sessionContext, filter, update, opts)
+	}
+	if err != nil {
+		log.Error("Error in Update Many, err: %s", err.Error())
+		return 0, 0, err
+	}
+	matchedCount := updateResult.MatchedCount
+	modifiedCount := updateResult.ModifiedCount
+
+	return int(matchedCount), int(modifiedCount), err
 }

@@ -1,29 +1,28 @@
-package registerUserController
+package controllers_add_user_controller
 
 import (
 	"context"
 	"fmt"
-	"github.com/spro80/golangCleanArchitecture/app/application/useCase/registerUserUseCase"
+	use_case_user_add "github.com/spro80/golangCleanArchitecture/app/application/useCase/user_add_use_case"
 	"github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity"
 	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity/interfaces"
-	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/models/request_models"
+	user_input_add_v1_request "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/add/v1/request"
 )
 
-type ControllerRegisterUserInterface interface {
-	HandlerRegisterUserController(ctx context.Context, requestUser *request_models.User) (user_entities_interface.UserEntityInterface, int, error)
+type UserAddControllerInterface interface {
+	HandlerUserAddController(ctx context.Context, requestUser *user_input_add_v1_request.UserAddRequest) (user_entities_interface.UserEntityInterface, int, error)
 }
 
-type ControllerRegisterUserHandler struct {
-	useCase registerUserUseCase.UseCaseRegisterUserInterface
+type UserAddControllerHandler struct {
+	useCase use_case_user_add.UserAddUseCaseInterface
 }
 
-func NewRegisterUserController(useCase registerUserUseCase.UseCaseRegisterUserInterface) *ControllerRegisterUserHandler {
-	return &ControllerRegisterUserHandler{useCase}
+func NewUserAddController(useCase use_case_user_add.UserAddUseCaseInterface) UserAddControllerInterface {
+	return &UserAddControllerHandler{useCase}
 }
 
-//func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(u *user.User) (*user.User, int, error) {
-func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(ctx context.Context, requestUser *request_models.User) (user_entities_interface.UserEntityInterface, int, error) {
-	fmt.Println("\n [register_user_controller] Init in HandlerRegisterUserController")
+func (r *UserAddControllerHandler) HandlerUserAddController(ctx context.Context, requestUser *user_input_add_v1_request.UserAddRequest) (user_entities_interface.UserEntityInterface, int, error) {
+	fmt.Println("\n [add_user_controller] Init in HandlerRegisterUserController")
 
 	/*
 		userEntityData := user_entity.NewUserEntity()
@@ -37,19 +36,19 @@ func (r *ControllerRegisterUserHandler) HandlerRegisterUserController(ctx contex
 	*/
 	userEntityData := r.createUserEntity(requestUser)
 
-	userEntity, statusCode, err := r.useCase.HandlerRegisterUserUseCase(ctx, userEntityData)
+	userEntity, statusCode, err := r.useCase.HandlerUserAddUseCase(ctx, userEntityData)
 	if err != nil {
-		fmt.Printf("\n [register_user_controller] User Rut: [%s] | Message Error from UseCase: [%s]", requestUser.Rut, err.Error())
+		fmt.Printf("\n [add_user_controller] User Rut: [%s] | Message Error from UseCase: [%s]", requestUser.Rut, err.Error())
 		return nil, statusCode, err
 	}
 
-	fmt.Printf("\n [register_user_controller] userEntity: [%v]", userEntity)
-	fmt.Printf("\n [register_user_controller] End of HandlerRegisterUserController | user RUT: [%s]", requestUser.Rut)
+	fmt.Printf("\n [add_user_controller] userEntity: [%v]", userEntity)
+	fmt.Printf("\n [add_user_controller] End of HandlerRegisterUserController | user RUT: [%s]", requestUser.Rut)
 
 	return userEntity, statusCode, nil
 }
 
-func (r *ControllerRegisterUserHandler) createUserEntity(requestUser *request_models.User) user_entities_interface.UserEntityInterface {
+func (r *UserAddControllerHandler) createUserEntity(requestUser *user_input_add_v1_request.UserAddRequest) user_entities_interface.UserEntityInterface {
 
 	userEntityData := user_entity.NewUserEntity()
 	userEntityData.SetRut(requestUser.Rut)

@@ -2,11 +2,7 @@ package web
 
 import (
 	"fmt"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/deleteUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/getAllUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/registerUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/templateController"
-	"github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/source"
 	"net/http"
 	"time"
 
@@ -33,21 +29,15 @@ func NewWebServer(config config.ConfigInterface) *WebServerHandler {
 }
 
 func (ws WebServerHandler) InitRoutes(
-
-	responseInterface response.ResponseInterface,
-	templateCtrlInterface templateController.TemplateControllerInterface,
-	getAllUserCtrlInterface getAllUserController.ControllerGetAllUserInterface,
-	registerUserCtrlInterface registerUserController.ControllerRegisterUserInterface,
-	deleteUserCtrlInterface deleteUserController.ControllerDeleteUserInterface) {
+	userAddInputV1FromApi source.FromApiInterface) {
 
 	fmt.Println("[server] Init in InitRoutes")
 	//config := config.NewConfig()
 
 	routes.NewHealthCheckRoute(ws.echoServer, ws.config)
-	routes.NewTemplateRoute(ws.echoServer, templateCtrlInterface)
-	routes.NewRegisterUserRoute(ws.echoServer, registerUserCtrlInterface, responseInterface)
-	routes.NewGetAllUserRoute(ws.echoServer, getAllUserCtrlInterface, responseInterface)
-	routes.NewDeleteUserRoute(ws.echoServer, deleteUserCtrlInterface, responseInterface)
+	routes.NewUserAddRoute(ws.echoServer, userAddInputV1FromApi)
+	//routes.NewGetAllUserRoute(ws.echoServer, getAllUserCtrlInterface, responseInterface)
+	//routes.NewDeleteUserRoute(ws.echoServer, deleteUserCtrlInterface, responseInterface)
 	fmt.Println("[server] InitRoutes called successfully")
 }
 

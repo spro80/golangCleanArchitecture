@@ -2,20 +2,15 @@ package infraestructure
 
 import (
 	"fmt"
-	deleteUserUseCase2 "github.com/spro80/golangCleanArchitecture/app/application/useCase/deleteUserUseCase"
-	"github.com/spro80/golangCleanArchitecture/app/application/useCase/getAllUserUseCase"
-	"github.com/spro80/golangCleanArchitecture/app/application/useCase/registerUserUseCase"
-	"github.com/spro80/golangCleanArchitecture/app/application/useCase/templateUseCase"
+	use_case_user_add "github.com/spro80/golangCleanArchitecture/app/application/useCase/user_add_use_case"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/mongo_client"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/mongo_client/user_repository"
 	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/gateways/user_gateway"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/deleteUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/getAllUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/registerUserController"
-	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/templateController"
+	controllers_add_user_controller "github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/user_add_controller"
+	source_user_input_add_v1 "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/add/v1"
 	"github.com/spro80/golangCleanArchitecture/app/shared/config"
-	"github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
+	shared_utils_response "github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
 )
 
 type LoadInterface interface {
@@ -47,30 +42,33 @@ func (ws LoadHandler) LoadRoutes() {
 	}
 
 	//Load shared
-	responseStruct := response.NewResponse()
+	sharedUtilsResponse := shared_utils_response.NewResponse()
+
 	//Load repository
 	userRepository := user_repository.NewUserRepository(clientDatabase)
 
 	//Load gateways
 	userGateway := user_gateway.NewRepositoryGateway(userRepository)
 
-	// UseCase
-	//Load useCase: (Are used as dependency injection in controllers.)
-	templateUseCase := templateUseCase.NewTemplateUseCase()
-
-	// UseCase: User
-	getAllUserUseCase := getAllUserUseCase.NewGetAllUserUseCase(userGateway)
-	registerUserUseCase := registerUserUseCase.NewRegisterUserUseCase(userGateway)
-	deleteUserUseCase := deleteUserUseCase2.NewDeleteUserUseCase(userGateway)
+	// Load UseCase
+	// User UseCase
+	userAddUseCase := use_case_user_add.NewUserAddUseCase(userGateway)
+	//getAllUserUseCase := getAllUserUseCase.NewGetAllUserUseCase(userGateway)
+	//deleteUserUseCase := deleteUserUseCase2.NewDeleteUserUseCase(userGateway)
 
 	//Load Controller
-	templateCtrl := templateController.NewTemplateController(templateUseCase)
-	getAllUserCtrl := getAllUserController.NewGetAllUserController(getAllUserUseCase)
-	registerUserCtrl := registerUserController.NewRegisterUserController(registerUserUseCase)
-	deleteUserCtrl := deleteUserController.NewDeleteUserController(deleteUserUseCase)
+	userAddController := controllers_add_user_controller.NewUserAddController(userAddUseCase)
+	//templateCtrl := templateController.NewTemplateController(templateUseCase)
+	//getAllUserCtrl := getAllUserController.NewGetAllUserController(getAllUserUseCase)
+	//deleteUserCtrl := deleteUserController.NewDeleteUserController(deleteUserUseCase)
+
+	//Load Input
+	userAddInput := source_user_input_add_v1.NewFromApi(userAddController, sharedUtilsResponse)
 
 	//Calling initialize routes
-	ws.web.InitRoutes(responseStruct, templateCtrl, getAllUserCtrl, registerUserCtrl, deleteUserCtrl)
+	//ws.web.InitRoutes(responseStruct, templateCtrl, getAllUserCtrl, userAddController, deleteUserCtrl)
+	//ws.web.InitRoutes(responseStruct, templateCtrl, userAddController)
+	ws.web.InitRoutes(userAddInput)
 }
 
 func LoadDatabase() (mongo_client.MongoClientInterface, error) {

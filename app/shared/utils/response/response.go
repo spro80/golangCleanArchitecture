@@ -1,4 +1,4 @@
-package response
+package shared_utils_response
 
 type ResponseInterface interface {
 	HandlerCreateResponseSuccess(status int, statusDes string, data string, errorDes string) ResponseStruct

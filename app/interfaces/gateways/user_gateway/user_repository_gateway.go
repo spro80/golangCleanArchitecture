@@ -44,9 +44,9 @@ func (g *RepositoryGateway) FindAllUsers(ctx context.Context) ([]user_entities_i
 
 	countUsers := len(userModel)
 	if len(userModel) > 0 {
-		fmt.Printf("Existen [%d] usuarios en en la base de datos.", countUsers)
+		fmt.Printf("[user_gateway][FindAllUsers] There are [%d] users in DB.", countUsers)
 	} else {
-		fmt.Println("[user_gateway][FindAllUsers] No se encontraron usuarios en la base de datos.")
+		fmt.Println("[user_gateway][FindAllUsers] There are not users in DB.")
 	}
 
 	var users []user_entities_interface.UserEntityInterface

@@ -1,37 +1,40 @@
-package getAllUserController
+package user_get_all_controller
 
 import (
 	"context"
 	"fmt"
 	"github.com/spro80/golangCleanArchitecture/app/application/useCase/user_get_all_use_case"
-	user_entities_interface "github.com/spro80/golangCleanArchitecture/app/domain/entity/user_entity/interfaces"
-	"github.com/spro80/golangCleanArchitecture/app/infraestructure/web/models/request_models"
+	"github.com/spro80/golangCleanArchitecture/app/interfaces/gateways/parser"
+	user_input_get_all_v1_request "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/get/v1/request"
+	user_input_get_all_v1_response "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/get/v1/response"
 )
 
-type ControllerGetAllUserInterface interface {
-	HandlerGetAllUserController(ctx context.Context, requestUser *request_models.User) ([]user_entities_interface.UserEntityInterface, int, error)
+type UserGetAllControllerInterface interface {
+	HandlerUserGetAllController(ctx context.Context, requestUser *user_input_get_all_v1_request.UserGetAllRequest) ([]user_input_get_all_v1_response.UserResponse, int, error)
 }
 
-type ControllerGetAllUserHandler struct {
-	useCase user_get_all_use_case.UseCaseGetAllUserInterface
+type UserGetAllControllerHandler struct {
+	useCase                    user_get_all_use_case.UserGetAllUseCaseInterface
+	parserUserEntityToResponse parser.UserEntityToUserResponseInterface
 }
 
-func NewGetAllUserController(useCase user_get_all_use_case.UseCaseGetAllUserInterface) *ControllerGetAllUserHandler {
-	return &ControllerGetAllUserHandler{useCase}
+func NewUserGetAllController(useCase user_get_all_use_case.UserGetAllUseCaseInterface, parserUserEntityToResponse parser.UserEntityToUserResponseInterface) *UserGetAllControllerHandler {
+	return &UserGetAllControllerHandler{useCase, parserUserEntityToResponse}
 }
 
-func (r *ControllerGetAllUserHandler) HandlerGetAllUserController(ctx context.Context, requestUser *request_models.User) ([]user_entities_interface.UserEntityInterface, int, error) {
-	fmt.Println("\n [get_all_user_controller] Init in HandlerGetAllUserController")
+func (r *UserGetAllControllerHandler) HandlerUserGetAllController(ctx context.Context, requestUser *user_input_get_all_v1_request.UserGetAllRequest) ([]user_input_get_all_v1_response.UserResponse, int, error) {
+	fmt.Println("\n [user_get_all_controller] Init in HandlerUserGetAllController")
 
-	fmt.Println("\n [get_all_user_controller] Before to call HandlerGetAllUserUseCase")
-	usersEntity, statusCode, err := r.useCase.HandlerGetAllUserUseCase(ctx)
+	fmt.Println("\n [user_get_all_controller] Before to call HandlerUserGetAllUseCase")
+	usersEntity, statusCode, err := r.useCase.HandlerUserGetAllUseCase(ctx)
 	if err != nil {
-		fmt.Printf("\n [get_all_user_controller] | Error from use case with message: [%s]", err.Error())
-		return nil, statusCode, err
+		fmt.Printf("\n [user_get_all_controller] | Error from user get all use case with error: [%s]", err.Error())
+		//return nil, statusCode, err
 	}
 
-	fmt.Printf("\n [get_all_user_controller] usersEntity: [%v]", usersEntity)
-	fmt.Printf("\n [get_all_user_controller] Register UseCase was called succesfully")
+	userResponse := r.parserUserEntityToResponse.UserEntityToUserResponseHandler(usersEntity)
+	fmt.Printf("\n [user_get_all_controller] usersEntity: [%v]", usersEntity)
+	fmt.Printf("\n [user_get_all_controller] User get all use case was called succesfully")
 
-	return usersEntity, statusCode, nil
+	return userResponse, statusCode, nil
 }

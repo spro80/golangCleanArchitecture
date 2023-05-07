@@ -6,20 +6,23 @@ import (
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/source"
 )
 
-type userAddRouteInterface interface {
-	HandlerRegisterUserRoute(serverContext echo.Context) error
+type userRouteInterface interface {
+	HandlerUserRoute(serverContext echo.Context) error
 }
 
-type userAddRouteHandler struct {
+type userRouteHandler struct {
+	userGetInput    source.FromApiInterface
 	userAddInput    source.FromApiInterface
+	userUpdateInput source.FromApiInterface
 	userDeleteInput source.FromApiInterface
 }
 
-func NewUserAddRoute(e *echo.Echo, userAddInput source.FromApiInterface, userUpdateInput source.FromApiInterface, userDeleteInput source.FromApiInterface) *userAddRouteHandler {
-	user := &userAddRouteHandler{userAddInput, userDeleteInput}
+func NewUserAddRoute(e *echo.Echo, userGetInput source.FromApiInterface, userAddInput source.FromApiInterface, userUpdateInput source.FromApiInterface, userDeleteInput source.FromApiInterface) *userRouteHandler {
+	user := &userRouteHandler{userGetInput, userAddInput, userUpdateInput, userDeleteInput}
+	e.GET("/api/v1/user/user-get-all", userGetInput.FromApi, middlewares.ContextMiddleWare)
 	e.POST("/api/v1/user/user-add", userAddInput.FromApi, middlewares.ContextMiddleWare)
 	e.PUT("/api/v1/user/user-update", userUpdateInput.FromApi, middlewares.ContextMiddleWare)
-	e.DELETE("/api/v1/user/delete-user/userId/:userId", userDeleteInput.FromApi, middlewares.ContextMiddleWare)
+	e.DELETE("/api/v1/user/user-delete/userId/:userId", userDeleteInput.FromApi, middlewares.ContextMiddleWare)
 
 	return user
 }

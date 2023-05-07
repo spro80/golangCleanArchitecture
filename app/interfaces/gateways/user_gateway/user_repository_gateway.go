@@ -18,10 +18,10 @@ func NewRepositoryGateway(repository user_repository.UserRepositoryInterface) in
 	return &RepositoryGateway{repository}
 }
 
-func (g *RepositoryGateway) FindUserByRut(userRut string) (user_entities_interface.UserEntityInterface, error) {
+func (g *RepositoryGateway) FindUserByRut(ctx context.Context, userRut string) (user_entities_interface.UserEntityInterface, error) {
 	fmt.Printf("\n [user_gateway] Init in FindUserByRut | User Rut: [%s] ", userRut)
 
-	userModel, err := g.userRepository.FindUserByRut(userRut)
+	userModel, err := g.userRepository.FindUserByRut(ctx, userRut)
 	if err != nil {
 		fmt.Printf("\n [user_gateway]: Error in called to Repository FindByUserId | User Rut: [%s] | Error with message: [%s] ", userRut, err.Error())
 		//TODO: create error generic

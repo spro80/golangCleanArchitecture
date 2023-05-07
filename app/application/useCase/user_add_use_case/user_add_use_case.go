@@ -23,7 +23,7 @@ func NewUserAddUseCase(userGateway interfaces_gateway.RepositoryGatewayInterface
 func (ru *UserAddUseCaseHandler) HandlerUserAddUseCase(ctx context.Context, userEntity user_entities_interface.UserEntityInterface) (user_entities_interface.UserEntityInterface, int, error) {
 	fmt.Printf("\n [user_add_use_case] Init in HandlerUserAddUseCase")
 
-	userResponse, err := ru.userGateway.FindUserByRut(userEntity.GetRut())
+	userResponse, err := ru.userGateway.FindUserByRut(ctx, userEntity.GetRut())
 	if err != nil {
 		fmt.Printf("\n [user_add_use_case] Error in FindUserByRut:[%s] with error:[%s]", userResponse.GetRut(), err.Error())
 		//TODO: create error from database

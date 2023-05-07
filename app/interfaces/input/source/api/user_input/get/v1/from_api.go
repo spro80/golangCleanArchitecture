@@ -24,6 +24,12 @@ func NewFromApi(userGetAllController user_get_all_controller.UserGetAllControlle
 func (i *fromApi) FromApi(serverContext echo.Context) error {
 	fmt.Println("Init in FromApi")
 	//var response response_models.ResponseModelSuccess
+	//r.URL.Query().Get("userId")
+
+	//userId := serverContext.Get("userId")
+	userId := serverContext.QueryParam("userId")
+
+	fmt.Printf("Init in FromApi userId: [%s]", userId)
 
 	var errBind error
 	var userRequest = user_input_get_all_v1_request.UserGetAllRequest{}
@@ -33,7 +39,8 @@ func (i *fromApi) FromApi(serverContext echo.Context) error {
 		return serverContext.JSON(http.StatusInternalServerError, response)
 	}
 
-	usersResponse, statusCode, errCtrl := i.userGetAllController.HandlerUserGetAllController(serverContext.Get("traceContext").(context.Context), &userRequest)
+	fmt.Printf("Init in FromApi userRequest: [%s]", userRequest.Rut)
+	usersResponse, statusCode, errCtrl := i.userGetAllController.HandlerUserGetAllController(serverContext.Get("traceContext").(context.Context), userId)
 	fmt.Printf("\n [user_input_get_all] user: [%v] | statusCode: [%d]", usersResponse, statusCode)
 
 	if errCtrl != nil {

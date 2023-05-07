@@ -153,7 +153,7 @@ func (mc *mongoCollection) FindOne(ctx interface{}, filter interface{}) SingleRe
 	ctxType := reflect.TypeOf(ctx).String()
 	log.Info("[mongo_client][FindOne] ctxType:[%v]", ctxType)
 	if ctxType == "*context.emptyCtx" ||
-		ctxType == "*context.valueCtx" || ctxType == "*context.cancelCtx" {
+		ctxType == "*context.valueCtx" {
 		log.Info("[mongo_client][FindOne] in if ctxType:[%v]", ctxType)
 		sessionContext := (ctx).(context.Context)
 		singleResult = mc.coll.FindOne(sessionContext, filter)

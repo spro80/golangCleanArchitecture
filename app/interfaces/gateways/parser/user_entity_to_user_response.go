@@ -23,6 +23,7 @@ func (r *userEntityToUserResponse) UserEntityToUserResponseHandler(userInterface
 
 	for k, _ := range userInterface {
 		userResponse.IdUser = "000"
+		userResponse.Rut = userInterface[k].GetRut()
 		userResponse.FirstName = userInterface[k].GetFirstName()
 		userResponse.LastName = userInterface[k].GetLastName()
 		userResponse.Email = userInterface[k].GetEmail()

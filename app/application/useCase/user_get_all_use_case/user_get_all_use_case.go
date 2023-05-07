@@ -12,7 +12,7 @@ import (
 )
 
 type UserGetAllUseCaseInterface interface {
-	HandlerUserGetAllUseCase(ctx context.Context) ([]user_entities_interface.UserEntityInterface, int, error)
+	HandlerUserGetAllUseCase(ctx context.Context, userId string) ([]user_entities_interface.UserEntityInterface, int, error)
 }
 
 type UserGetAllUseCaseHandler struct {
@@ -23,16 +23,32 @@ func NewUserGetAllUseCase(userGateway interfaces_gateway.RepositoryGatewayInterf
 	return &UserGetAllUseCaseHandler{userGateway}
 }
 
-func (ru *UserGetAllUseCaseHandler) HandlerUserGetAllUseCase(ctx context.Context) ([]user_entities_interface.UserEntityInterface, int, error) {
-	fmt.Printf("\n [user_get_all_use_case] Init in HandlerUserGetAllUseCase")
+func (ru *UserGetAllUseCaseHandler) HandlerUserGetAllUseCase(ctx context.Context, userId string) ([]user_entities_interface.UserEntityInterface, int, error) {
+	fmt.Printf("\n [user_get_all_use_case] Init in HandlerUserGetAllUseCase | userId: [%v]", userId)
 
-	usersEntity, err := ru.userGateway.FindAllUsers(ctx)
-	if err != nil {
-		fmt.Printf("\n [user_get_all_use_case] Error in called to FindAllUsers, error:[%s]", err.Error())
-		//TODO: create error from database
-		return nil, http.StatusInternalServerError, err
+	if userId == "" {
+		usersEntity, err := ru.userGateway.FindAllUsers(ctx)
+		if err != nil {
+			fmt.Printf("\n [user_get_all_use_case] Error in called to FindAllUsers, error:[%s]", err.Error())
+			//TODO: create error from database
+			return nil, http.StatusInternalServerError, err
+		}
+		return usersEntity, http.StatusOK, nil
+	} else if userId != "" || userId != "undefined" {
+		fmt.Println("se debe llamar a método getUserById")
+
+		usersEntity, err := ru.userGateway.FindUserByRut(ctx, userId)
+		if err != nil {
+			fmt.Printf("\n [user_get_all_use_case] Error in called to FindUserByRut, error:[%s]", err.Error())
+			//TODO: create error from database
+			return nil, http.StatusInternalServerError, err
+		}
+		return []user_entities_interface.UserEntityInterface{usersEntity}, http.StatusOK, nil
+	} else {
+		fmt.Println("Option is not valid")
 	}
 
 	fmt.Printf("\n [user_get_all_use_case] Use case finished successfully")
-	return usersEntity, http.StatusOK, nil
+	return nil, http.StatusOK, nil
+
 }

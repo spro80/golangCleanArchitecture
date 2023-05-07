@@ -15,7 +15,7 @@ import (
 )
 
 type UserRepositoryInterface interface {
-	FindUserByRut(userRut string) (*models.UserModel, error)
+	FindUserByRut(ctx context.Context, userRut string) (*models.UserModel, error)
 	FindAllUsers(ctx context.Context) ([]models.UserModel, error)
 	SaveUser(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error)
 	UserUpdate(ctx context.Context, user *models.UserModel, contextSession ...context.Context) (*models.UserModel, error)
@@ -32,10 +32,9 @@ func NewUserRepository(database mongo_client.DatabaseInterface) UserRepositoryIn
 	return &UserRepository{collection, database.Client()}
 }
 
-func (ur *UserRepository) FindUserByRut(userRut string) (*models.UserModel, error) {
+func (ur *UserRepository) FindUserByRut(ctx context.Context, userRut string) (*models.UserModel, error) {
 	fmt.Printf("\n [user_repository][FindByUserId] Init in FindByUserId | User Rut: [%s] ", userRut)
 
-	ctx := context.Background()
 	cur := ur.collection.FindOne(ctx, bson.M{"rut": userRut})
 
 	var user models.UserModel

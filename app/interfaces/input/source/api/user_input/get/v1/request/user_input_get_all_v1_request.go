@@ -1,6 +1,11 @@
 package user_input_get_all_v1_request
 
 type UserGetAllRequest struct {
+	Rut string `param:"userId" validate:"required"`
+}
+
+/*
+type UserGetAllRequest struct {
 	Rut       string `json:"rut" validate:"required"`
 	UserName  string `json:"userName" validate:"required"`
 	Password  string `json:"password" validate:"required"`
@@ -18,3 +23,4 @@ type Profile struct {
 	ProfileDateEnd  string `json:"profileDateEnd" validate:"required"`
 	ProfileAllTime  bool   `json:"profileAllTime" validate:"required"`
 }
+*/

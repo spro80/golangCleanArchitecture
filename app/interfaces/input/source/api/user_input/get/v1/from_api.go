@@ -52,7 +52,7 @@ func (i *fromApi) FromApi(serverContext echo.Context) error {
 	}
 
 	if len(usersResponse) == 0 {
-		description := "There are not users in database"
+		description := fmt.Sprintf("The user with UserId: [%s] was not found in database", userId)
 		fmt.Printf("\n [user_input_get_all] %s", description)
 		response := i.response.HandlerCreateResponseSuccess(statusCode, description, usersResponse, "")
 		return serverContext.JSON(http.StatusOK, response)
@@ -63,7 +63,7 @@ func (i *fromApi) FromApi(serverContext echo.Context) error {
 	}*/
 	//return serverContext.JSON(http.StatusOK, dataResponse)
 
-	description := fmt.Sprintf("There are %d users in DB", len(usersResponse))
+	description := fmt.Sprintf("The user with RUT: [%s] was not found in database", usersResponse[0].Rut)
 	response := i.response.HandlerCreateResponseSuccess(statusCode, description, usersResponse, "")
 	fmt.Println("\n [user_input_get_all] End in HandlerRegisterUserRoute")
 

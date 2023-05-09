@@ -9,6 +9,7 @@ func UserEntityToModel(user user_entities_interface.UserEntityInterface) *models
 
 	//Data User
 	userModel := models.UserModel{}
+	userModel.UserId = user.GetUserId()
 	userModel.Rut = user.GetRut()
 	userModel.UserName = user.GetUserName()
 	userModel.Password = user.GetPassword()

@@ -26,6 +26,10 @@ func NewProfileEntity() user_entities_interface.ProfileEntityInterface {
 	return profileClient
 }
 
+func (u *userClient) GetUserId() string {
+	return u.user.UserId
+}
+
 func (u *userClient) GetRut() string {
 	return u.user.Rut
 }
@@ -76,6 +80,11 @@ func (p *profileClient) GetProfileDateEnd() string {
 
 func (p *profileClient) GetProfileAllTime() bool {
 	return p.profile.ProfileAllTime
+}
+
+func (u *userClient) SetUserId(userId string) error {
+	u.user.UserId = userId
+	return nil
 }
 
 func (u *userClient) SetRut(rut string) error {

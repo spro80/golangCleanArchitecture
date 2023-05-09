@@ -22,7 +22,7 @@ func (r *userEntityToUserResponse) UserEntityToUserResponseHandler(userInterface
 	var usersResponse []user_input_get_all_v1_response.UserResponse
 
 	for k, _ := range userInterface {
-		userResponse.IdUser = "000"
+		userResponse.UserId = userInterface[k].GetUserId()
 		userResponse.Rut = userInterface[k].GetRut()
 		userResponse.FirstName = userInterface[k].GetFirstName()
 		userResponse.LastName = userInterface[k].GetLastName()

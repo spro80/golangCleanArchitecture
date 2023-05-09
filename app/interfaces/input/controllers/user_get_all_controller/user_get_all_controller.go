@@ -25,10 +25,15 @@ func (r *UserGetAllControllerHandler) HandlerUserGetAllController(ctx context.Co
 	fmt.Printf("\n [user_get_all_controller] Init in HandlerUserGetAllController | userId: [%s]", userId)
 
 	fmt.Println("\n [user_get_all_controller] Before to call HandlerUserGetAllUseCase")
-	usersEntity, statusCode, err := r.useCase.HandlerUserGetAllUseCase(ctx, userId)
+	usersEntity, typeFindUser, statusCode, err := r.useCase.HandlerUserGetAllUseCase(ctx, userId)
 	if err != nil {
 		fmt.Printf("\n [user_get_all_controller] | Error from user get all use case with error: [%s]", err.Error())
 		//return nil, statusCode, err
+	}
+
+	if typeFindUser == "getUserById" && usersEntity == nil {
+		fmt.Println("\n [user_get_all_controller] The user was not found in database.")
+		return nil, statusCode, nil
 	}
 
 	userResponse := r.parserUserEntityToResponse.UserEntityToUserResponseHandler(usersEntity)

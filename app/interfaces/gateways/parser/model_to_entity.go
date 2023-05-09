@@ -9,6 +9,7 @@ import (
 func UserModelToEntity(userModel *models.UserModel) user_entity_interface.UserEntityInterface {
 
 	userEntity := user_entity.NewUserEntity()
+	userEntity.SetUserId(userModel.UserId)
 	userEntity.SetRut(userModel.Rut)
 	userEntity.SetUserName(userModel.UserName)
 	userEntity.SetPassword(userModel.Password)

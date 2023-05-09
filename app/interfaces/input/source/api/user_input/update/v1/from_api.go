@@ -47,6 +47,6 @@ func (i *fromApi) FromApi(serverContext echo.Context) error {
 	}
 
 	fmt.Println("\n [user_update_input] End in HandlerUserUpdateController")
-	response := i.response.HandlerCreateResponseSuccess(statusCode, "User was created successfully", "", "")
+	response := i.response.HandlerCreateResponseSuccess(statusCode, "User was updated successfully", "", "")
 	return serverContext.JSON(http.StatusOK, response)
 }

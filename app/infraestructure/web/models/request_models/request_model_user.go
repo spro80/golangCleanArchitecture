@@ -1,6 +1,7 @@
 package request_models
 
 type User struct {
+	UserId    string `json:"userId"`
 	Rut       string `json:"rut"`
 	UserName  string `json:"userName"`
 	Password  string `json:"password"`

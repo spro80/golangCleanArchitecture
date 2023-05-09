@@ -51,6 +51,7 @@ func (r *UserAddControllerHandler) HandlerUserAddController(ctx context.Context,
 func (r *UserAddControllerHandler) createUserEntity(requestUser *user_input_add_v1_request.UserAddRequest) user_entities_interface.UserEntityInterface {
 
 	userEntityData := user_entity.NewUserEntity()
+	userEntityData.SetUserId(requestUser.UserId)
 	userEntityData.SetRut(requestUser.Rut)
 	userEntityData.SetFirstName(requestUser.FirstName)
 	userEntityData.SetLastName(requestUser.LastName)

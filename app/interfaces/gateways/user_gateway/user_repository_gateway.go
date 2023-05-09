@@ -19,16 +19,22 @@ func NewRepositoryGateway(repository user_repository.UserRepositoryInterface) in
 }
 
 func (g *RepositoryGateway) FindUserByRut(ctx context.Context, userRut string) (user_entities_interface.UserEntityInterface, error) {
-	fmt.Printf("\n [user_gateway] Init in FindUserByRut | User Rut: [%s] ", userRut)
+	fmt.Printf("\n [user_gateway, FindUserByRut] Init in FindUserByRut | User Rut: [%s] ", userRut)
 
 	userModel, err := g.userRepository.FindUserByRut(ctx, userRut)
 	if err != nil {
-		fmt.Printf("\n [user_gateway]: Error in called to Repository FindByUserId | User Rut: [%s] | Error with message: [%s] ", userRut, err.Error())
+		fmt.Printf("\n [user_gateway, FindUserByRut]: Error in called to Repository FindByUserId | User Rut: [%s] | Error with message: [%s] ", userRut, err.Error())
 		//TODO: create error generic
 		return nil, err
 	}
 
-	fmt.Printf("\n [user_gateway]: Repository FindByUserId was called succesfully | User Rut: [%s] ", userRut)
+	/*
+		if userModel.UserId == "" {
+			fmt.Printf("\n [user_gateway, FindUserByRut] User was not found in database | User Rut: [%s] ", userRut)
+			return nil, nil
+		}*/
+
+	fmt.Printf("\n [user_gateway, FindUserByRut]: Repository FindByUserId was called succesfully | User Rut: [%s] ", userRut)
 	return parser.UserModelToEntity(userModel), nil
 }
 
@@ -46,7 +52,7 @@ func (g *RepositoryGateway) FindAllUsers(ctx context.Context) ([]user_entities_i
 	if len(userModel) > 0 {
 		fmt.Printf("[user_gateway][FindAllUsers] There are [%d] users in DB.", countUsers)
 	} else {
-		fmt.Println("[user_gateway][FindAllUsers] There are not users in DB.")
+		fmt.Printf("[user_gateway][FindAllUsers] There are not users in DB : [%v]", userModel)
 	}
 
 	var users []user_entities_interface.UserEntityInterface
@@ -60,6 +66,7 @@ func (g *RepositoryGateway) FindAllUsers(ctx context.Context) ([]user_entities_i
 		fmt.Printf("\n")
 		fmt.Println(pos, value)
 		user := user_entity.NewUserEntity()
+		user.SetUserId(userModel[pos].UserId)
 		user.SetRut(userModel[pos].Rut)
 		user.SetUserName(userModel[pos].UserName)
 		user.SetPassword(userModel[pos].Password)

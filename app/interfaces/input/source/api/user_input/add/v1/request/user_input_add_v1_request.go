@@ -1,6 +1,7 @@
 package user_input_add_v1_request
 
 type UserAddRequest struct {
+	UserId    string `json:"userId" validate:"required"`
 	Rut       string `json:"rut" validate:"required"`
 	UserName  string `json:"userName" validate:"required"`
 	Password  string `json:"password" validate:"required"`

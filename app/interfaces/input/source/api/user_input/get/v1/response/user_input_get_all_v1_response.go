@@ -5,7 +5,7 @@ func NewUserResponse() *UserResponse {
 }
 
 type UserResponse struct {
-	IdUser    string `json:"idUser" validate:"required"`
+	UserId    string `json:"userId" validate:"required"`
 	Rut       string `json:"rut" validate:"required"`
 	FirstName string `json:"firstName" validate:"required"`
 	LastName  string `json:"lastName" validate:"required"`

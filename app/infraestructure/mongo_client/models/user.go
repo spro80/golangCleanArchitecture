@@ -4,6 +4,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type UserModel struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	UserId    string             `bson:"userId,omitempty"`
 	Rut       string             `bson:"rut,omitempty"`
 	UserName  string             `bson:"userName,omitempty"`
 	Password  string             `bson:"password, omitempty"`

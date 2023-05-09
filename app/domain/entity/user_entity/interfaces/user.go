@@ -1,6 +1,7 @@
 package user_entity_interface
 
 type UserEntityInterface interface {
+	GetUserId() string
 	GetRut() string
 	GetUserName() string
 	GetPassword() string
@@ -10,6 +11,7 @@ type UserEntityInterface interface {
 	GetValid() bool
 	GetProfile() ProfileEntityInterface
 
+	SetUserId(userId string) error
 	SetRut(rut string) error
 	SetUserName(name string) error
 	SetPassword(password string) error

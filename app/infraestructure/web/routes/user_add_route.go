@@ -19,6 +19,7 @@ type userRouteHandler struct {
 
 func NewUserAddRoute(e *echo.Echo, userGetInput source.FromApiInterface, userAddInput source.FromApiInterface, userUpdateInput source.FromApiInterface, userDeleteInput source.FromApiInterface) *userRouteHandler {
 	user := &userRouteHandler{userGetInput, userAddInput, userUpdateInput, userDeleteInput}
+	
 	e.GET("/api/v1/user/user-get", userGetInput.FromApi, middlewares.ContextMiddleWare)
 	e.POST("/api/v1/user/user-add", userAddInput.FromApi, middlewares.ContextMiddleWare)
 	e.PUT("/api/v1/user/user-update", userUpdateInput.FromApi, middlewares.ContextMiddleWare)

@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "c957765d-d992-416b-8ade-4e47f84e0bd6",
+		"name": "GolangCleanArchitecture_AdminUser",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "adminUser_health_ok",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9091/health",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "admnUser_getAll_ok",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-get/145157781",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-get",
+						"145157781"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "adminUser_save_ok",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rut\": \"64844695\",\n    \"userName\": \"maria\",\n    \"password\": \"555555\",\n    \"email\": \"maria@gmail.com\",\n    \"firstName\": \"maria\",\n    \"lastName\": \"sierra\",\n    \"valid\": true,\n    \"profile\": {\n        \"profileId\": 2,\n        \"profileStatus\": true,\n        \"profileDateInit\": \"2024\",\n        \"profileDateEnd\": \"2024\",\n        \"profileAllTime\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-add",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "adminUser_save_user2_ok",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rut\": \"145157781\",\n    \"userName\": \"david\",\n    \"password\": \"666666\",\n    \"email\": \"spro@gmail.com\",\n    \"firstName\": \"david\",\n    \"lastName\": \"diaz\",\n    \"valid\": true,\n    \"profile\": {\n        \"profileId\": 1,\n        \"profileStatus\": true,\n        \"profileDateInit\": \"2024\",\n        \"profileDateEnd\": \"2024\",\n        \"profileAllTime\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/registerUser",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"registerUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "adminUser_update_ok",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rut\": \"64844695\",\n    \"userName\": \"maria\",\n    \"password\": \"555555\",\n    \"email\": \"maria@gmail.com\",\n    \"firstName\": \"maria\",\n    \"lastName\": \"sierrita\",\n    \"valid\": true,\n    \"profile\": {\n        \"profileId\": 2,\n        \"profileStatus\": true,\n        \"profileDateInit\": \"2024\",\n        \"profileDateEnd\": \"2024\",\n        \"profileAllTime\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-update",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "adminUser_delete_ok",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-delete/userId/64844695",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-delete",
+						"userId",
+						"64844695"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userSave_deprecated",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rut\": \"64844695\",\n    \"userName\": \"maria\",\n    \"password\": \"555555\",\n    \"email\": \"maria@gmail.com\",\n    \"firstName\": \"maria\",\n    \"lastName\": \"sierrita\",\n    \"valid\": true,\n    \"profile\": {\n        \"profileId\": 2,\n        \"profileStatus\": true,\n        \"profileDateInit\": \"2024\",\n        \"profileDateEnd\": \"2024\",\n        \"profileAllTime\": true\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/registerUser",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"registerUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userDelete_deprecated",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"rut\": \"145157781\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/deleteUser",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"deleteUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userGetAll_deprecated",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-get/145157781",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-get",
+						"145157781"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registerUserPostError_deprecated",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"spro80@gmail.com\",\n    \"firstName\": \"caro\",\n    \"lastName\": \"sierraaaaa\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9091/api/v1/user/user-add",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"user-add"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -48,16 +48,3 @@ func (ru *UserAddUseCaseHandler) HandlerUserAddUseCase(ctx context.Context, user
 
 	return nil, http.StatusOK, nil
 }
-
-/*
-func validateUser(user *user_entity.User) error {
-	var validate *validator.Validate
-
-	validate = validator.New()
-	err := validate.Struct(user)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-*/

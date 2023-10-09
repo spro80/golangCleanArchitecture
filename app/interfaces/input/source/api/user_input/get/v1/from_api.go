@@ -3,13 +3,14 @@ package source_user_input_get_all_v1
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/controllers/user_get_all_controller"
 	"github.com/spro80/golangCleanArchitecture/app/interfaces/input/source"
 	user_input_get_all_v1_request "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/get/v1/request"
 	user_input_get_all_v1_response "github.com/spro80/golangCleanArchitecture/app/interfaces/input/source/api/user_input/get/v1/response"
 	shared_utils_response "github.com/spro80/golangCleanArchitecture/app/shared/utils/response"
-	"net/http"
 )
 
 type fromApi struct {
@@ -48,22 +49,22 @@ func (i *fromApi) FromApi(serverContext echo.Context) error {
 		fmt.Printf("\n [%s]", description)
 		response := i.response.HandlerCreateResponseSuccess(statusCode, description, usersResponse, errCtrl.Error())
 		return serverContext.JSON(http.StatusOK, response)
-
 	}
 
+	description := ""
 	if len(usersResponse) == 0 {
-		description := fmt.Sprintf("The user with UserId: [%s] was not found in database", userId)
+		description = fmt.Sprintf("The are not users found in database")
 		fmt.Printf("\n [user_input_get_all] %s", description)
 		response := i.response.HandlerCreateResponseSuccess(statusCode, description, usersResponse, "")
 		return serverContext.JSON(http.StatusOK, response)
+	} else {
+		description = fmt.Sprintf("There are [%d] users found in database", len(usersResponse))
 	}
 
 	/*dataResponse := map[string]interface{}{
 		"data": usersResponse,
 	}*/
 	//return serverContext.JSON(http.StatusOK, dataResponse)
-
-	description := fmt.Sprintf("The user with RUT: [%s] was not found in database", usersResponse[0].Rut)
 	response := i.response.HandlerCreateResponseSuccess(statusCode, description, usersResponse, "")
 	fmt.Println("\n [user_input_get_all] End in HandlerRegisterUserRoute")
 
